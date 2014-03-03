@@ -1,2 +1,3 @@
 - Ember CRM is based on this tutorial - http://programmingarehard.com/2013/12/18/ember-crm.html
 - Chat is based on this tutorial - http://code.tutsplus.com/tutorials/ember-components-a-deep-dive--net-35551
+- Blog is based on this tutorial - https://www.youtube.com/watch?v=1QHrlFlaXdI
