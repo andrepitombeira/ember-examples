@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="David Adams">
+
+    <title>Ember CRM</title>
+
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/css/bootstrap-theme.min.css">
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.css">
+    <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2-bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script type="text/x-handlebars">
+    <div class="container">
+
+        <h2>Ember CRM</h2>
+        <aside>
+            <ul class="nav nav-pills">
+                <li>
+                    {{#link-to 'companies'}}
+                    Companies
+                    {{/link-to}}
+                </li>
+                <li>
+                    {{#link-to 'people'}}
+                        People
+                    {{/link-to}}
+                </li>
+            </ul>
+        </aside>
+
+        <section class="main">
+            {{outlet}}
+        </section>
+    </div>
+</script>
+
+   <script type="text/x-handlebars" data-template-name="companies">
+       <div class="row">
+           <div class="col-md-3">
+               <div id="company-list" class="list-group">
+                   {{#link-to 'companies.new' class="list-group-item bold"}}+ New Company{{/link-to}}
+                   {{#each}}
+                        {{#if name}}
+                            {{#link-to 'company' this class="list-group-item"}}
+                                {{name}}
+                            {{/link-to}}
+                        {{/if}}
+                   {{/each}}
+               </div>
+           </div>
+           <div class="col-md-9">
+               {{outlet}}
+           </div>
+       </div>
+   </script>
+
+   <script type="text/x-handlebars" data-template-name="company">
+       {{#if isEditing}}
+            {{partial "company/_edit"}}
+       {{else}}
+            {{partial "company/_show"}}
+       {{/if}}
+
+       {{outlet taskModal}}
+   </script>
+
+   <script type="text/x-handlebars" data-template-name="company/_show">
+       <section class="secondary">
+           <div class="row">
+               <div class="col-md-12">
+                   <form class="form-horizontal" role="form">
+                       <div class="form-group">
+                           <label class="col-sm-2 control-label">Name</label>
+                           <div class="col-sm-10">
+                               <p class="form-control-static">{{name}}</p>
+                           </div>
+                       </div>
+
+                       <div class="form-group">
+                           <label class="col-sm-2 control-label">People</label>
+                           <div class="col-sm-10">
+                               <p class="form-control-static">
+                               <ul>
+                                   {{#each person in people}}
+                                        {{#if person.fullName}}
+                                            <li>{{#link-to 'person' person}}{{person.fullName}}{{/link-to}}</li>
+                                        {{/if}}
+                                   {{/each}}
+                               </ul>
+                               </p>
+                           </div>
+                       </div>
+
+                       <div class="form-group">
+                           <label class="col-sm-2 control-label">Tasks</label>
+                           <div class="col-sm-10">
+                               <p class="form-control-static">
+                               <ul>
+                                   {{#each task in tasks}}
+                                   {{#if task.subject}}
+                                          <li>
+                                              <a {{action 'editTask' task}} {{bind-attr class="task.isDirty:dirty:notDirty"}}>{{task.subject}}</a>
+                                          </li>
+                                   {{/if}}
+                                   {{/each}}
+                               </ul>
+                               </p>
+                           </div>
+                       </div>
+                   </form>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <button type="submit" class="btn btn-default" {{action 'edit'}}>Edit</button>
+               </div>
+               <div class="col-md-6 right">
+                   <button type="submit" class="btn btn-primary" {{action 'newTask'}}>Add Task</button>
+               </div>
+           </div>
+       </section>
+   </script>
+
+   <script type="text/x-handlebars" data-template-name="company/_edit">
+       <section class="secondary">
+           <div class="row">
+               <div class="col-md-12">
+                   {{partial "messageBoard"}}
+                   <form role="form">
+                       <div class="form-group">
+                           <label for="name">Name</label>
+                           {{input type="text" value=name class="form-control" id="name" placeholder="Company Name"}}
+                       </div>
+                   </form>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-6">
+                   <button type="submit" class="btn btn-primary" {{action 'save'}}>Save</button>
+               </div>
+               <div class="col-md-6 right">
+                   {{#unless isNew}}
+                   <button type="submit" class="btn btn-default" {{action 'cancel'}}>Cancel</button>
+                   {{/unless}}
+               </div>
+           </div>
+       </section>
+   </script>
+
+    <script type="text/x-handlebars" data-template-name="_messageBoard">
+        {{#if successMessages}}
+            <div class="alert alert-success">
+                <a class="close" aria-hidden="true" {{action "dismissSuccessMessage"}}>&times;</a>
+                <ul>
+                    {{#each successMessages}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+
+        {{#if errorMessages}}
+            <div class="alert alert-danger">
+                <a class="close" aria-hidden="true" {{action "dismissErrorMessage"}}>&times;</a>
+                <ul>
+                    {{#each errorMessages}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
+    </script>
+
+<script type="text/x-handlebars" data-template-name="people">
+    <div class="row">
+        <div class="col-md-3">
+            <div id="people-list" class="list-group">
+                {{#link-to 'people.new' class="list-group-item bold"}}+ New Person{{/link-to}}
+
+                {{#each}}
+                {{#if fullName}}
+                {{#link-to 'person' this class="list-group-item"}}
+                {{fullName}}
+                {{/link-to}}
+                {{/if}}
+                {{/each}}
+            </div>
+        </div>
+        <div class="col-md-9">
+            {{outlet}}
+        </div>
+    </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="person">
+    {{#if isEditing}}
+        {{partial "person/_edit"}}
+    {{else}}
+        {{partial "person/_show"}}
+    {{/if}}
+
+    {{outlet taskModal}}
+</script>
+
+<script type="text/x-handlebars" data-template-name='person/_show'>
+    <section class="secondary">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Name</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{fullName}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Location</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{location}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Company</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">{{#link-to 'company' company}}{{company.name}}{{/link-to}}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Tasks</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">
+                            <ul>
+                                {{#each task in tasks}}
+                                    {{#if task.subject}}
+                                        <li>
+                                            <a {{action 'editTask' task}} {{bind-attr class="task.isDirty:dirty:notDirty"}}>{{task.subject}}</a>
+                                        </li>
+                                    {{/if}}
+                                {{/each}}
+                            </ul>
+                            </p>
+                        </div>
+                    </div>
+            </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-default" {{action 'edit'}}>Edit</button>
+            </div>
+            <div class="col-md-6 right">
+                <button type="submit" class="btn btn-primary" {{action 'newTask'}}>Add Task</button>
+            </div>
+        </div>
+    </section>
+</script>
+
+<script type="text/x-handlebars" data-template-name='person/_edit'>
+    <section class="secondary">
+        <div class="row">
+            <div class="col-md-12">
+                {{partial "messageBoard"}}
+                <form role="form">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        {{input type="text" value=firstName class="form-control" id="firstName" placeholder="First Name"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        {{input type="text" value=lastName class="form-control" id="lastName" placeholder="Last Name"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        {{input type="email" value=email class="form-control" id="email" placeholder="Email"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        {{input type="text" value=city class="form-control" id="city" placeholder="City"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        {{input type="text" value=state class="form-control" id="state" placeholder="state"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <br />{{company.name}}
+                    </div>
+                    <div class="form-group">
+
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary" {{action 'save'}}>Save</button>
+            </div>
+            <div class="col-md-6 right">
+                {{#unless isNew}}
+                <button type="submit" class="btn btn-default" {{action 'cancel'}}>Cancel</button>
+                {{/unless}}
+            </div>
+        </div>
+    </section>
+</script>
+
+<script type="text/x-handlebars" data-template-name="taskModal">
+    <!-- Modal -->
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {{#if isNew}}
+                    New Task
+                    {{else}}
+                    Edit Task
+                    {{/if}}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        {{input type="text" value=subject class="form-control" id="subject" placeholder="Subject"}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-6 left">
+                        <button type="button" {{action save}} class="btn btn-primary">Save</button>
+                    </div>
+                    <div class="col-md-6 right">
+                        {{#unless isNew}}
+                        <button type="button" {{action delete}} class="btn btn-danger">Delete</button>
+                        {{/unless}}
+                        <button type="button" {{action cancel}} class="btn btn-default">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</script>
+
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.4.4/select2.min.js"></script>
+  <script src="js/libs/ember-1.4.0.js"></script>
+  <script src="js/libs/ember-data.js"></script>
+  <script src="js/app/app.js"></script>
+  <script src="js/app/router.js"></script>
+  <script src="js/app/controllers.js"></script>
+  <script src="js/app/models.js"></script>
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <!--<script src="tests/runner.js"></script>-->
+</body>
+</html>

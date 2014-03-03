@@ -1,0 +1,99 @@
+html, body {
+    margin: 20px;
+    color: #555;
+}
+
+a {
+    text-decoration: none;
+}
+
+h2 {
+    margin-bottom: 30px;
+}
+
+.container {
+    width: 900px;
+    margin: 30px auto 30px;
+}
+
+.main {
+
+    border: 1px solid #222;
+    background-image: url(../images/tweed.png);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.secondary {
+
+    border: 1px solid #222;
+    background: #FFF;
+    padding: 10px;
+    border-radius: 10px;
+}
+.nav-pills a:hover {
+
+    color: #2a6496;
+}
+
+.active {
+    background-image: url(../images/tweed.png);
+    border: 1px solid #222;
+    color: #fff;
+}
+
+.active:hover {
+
+    color: #fff !important;
+}
+
+.left {
+    text-align: left;
+}
+
+.right{
+    text-align: right;
+}
+
+.new {
+    margin-top: 30px;
+}
+
+#company-list .active {
+
+    font-weight: normal;
+}
+
+#people-list .active {
+
+    font-weight: normal;
+}
+
+.list-group {
+    border-radius: 10px !important;
+    overflow: hidden;
+    border: 0;
+}
+
+.dirty {
+
+    color: red !important;
+}
+
+.notDirty {
+
+    color: green !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.center {
+    text-align: center;
+}
+
+.white {
+    color: white;
+}
