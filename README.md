@@ -4,3 +4,4 @@
 - ToDo MVC is based on this tutorial - http://emberjs.com/guides/getting-started/
 - Chart is based on this tutorial - http://slid.es/samselikoff/ember-and-d3-sep-2013
 - Ember101 is based on this tutorial - http://ember101.com/
+- Ember.js Beginners Tutorial is based on this tutorial - http://www.williamhart.info/an-emberjs-beginners-tutorial.html
