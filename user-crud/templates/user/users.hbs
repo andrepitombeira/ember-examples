@@ -1,0 +1,21 @@
+<ul class="users-listing">
+    {{#each user in controller}}
+        <li>
+            {{#link-to "user" user}}
+                {{user.name}}
+            {{/link-to}}
+        </li>
+    {{else}}
+        <li>No users...</li>
+    {{/each}}
+</ul>
+
+<div>
+    Users: {{usersCount}}
+</div>
+
+{{#link-to "users.create" class="create-btn"}}
+    Add user
+{{/link-to}}
+
+{{outlet}}
