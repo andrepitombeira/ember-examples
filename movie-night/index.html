@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Movie Night</title>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <script type="text/x-handlebars">
+      <div class="navbar">
+          <div class="navbar-inner">
+              <a class="brand" href="#">Movie Night</a>
+              <ul class="nav">
+                  <li>
+                      {{#link-to 'movies'}}
+                      Movies
+                      {{/link-to}}
+                  </li>
+                  <li>
+                      {{#link-to 'users'}}
+                        Users
+                      {{/link-to}}
+                  </li>
+              </ul>
+          </div>
+      </div>
+      {{outlet}}
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="movies">
+     <div id="movies-table">
+         <table class="table table-striped table-condensed">
+             <thead>
+             <th>Vote Average</th>
+             <th>Title</th>
+             <th>Original Title</th>
+             <th>Release Date</th>
+             </thead>
+             <tbody>
+             {{#each}}
+             <tr>
+                 <td>{{vote_average}}</td>
+                 <td>{{title}}</td>
+                 <td>{{original_title}}</td>
+                 <td>{{release_date}}</td>
+                 <td>
+                     {{#link-to 'movie' this class="btn btn-primary"}}
+                        Details
+                     {{/link-to}}
+                 </td>
+             </tr>
+             {{/each}}
+             </tbody>
+         </table>
+     </div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="movie">
+      <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title">{{title}}</h3>
+          </div>
+          <div class="panel-body">
+              <label class="control-label">Title: {{title}}</label>
+              <label class="control-label">Original Title: {{original_title}}</label>
+              <label class="control-label">Release Date: {{release_date}}</label>
+              <label class="control-label">Overview: {{overview}}</label>
+          </div>
+      </div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="users">
+      <button type="button" class="btn btn-primary" {{action 'newUser'}}>
+        New User
+      </button>
+
+      {{#if isCreating}}
+        {{partial 'user/new'}}
+      {{/if}}
+
+      <table class="table table-striped table-condensed">
+        <thead>
+            <th>Name</th>
+            <th>Email</th>
+        </thead>
+        <tbody>
+        {{#each}}
+            {{#if isEditing}}
+                {{partial 'user/edit'}}
+            {{else}}
+                {{partial 'user/show'}}
+            {{/if}}
+        {{/each}}
+        <tbody>
+      </table>
+  </script>
+
+  <script type="text/x-handlebars" id="user/_new">
+      <p style="padding-top:10px;">
+          {{input-user type="text" id="new-name" placeholder="Name" value=newName}}
+          {{input type="text" id="new-email" placeholder="Email" value=newEmail insert-newline="createUser"}}
+          <button {{action 'createUser'}} class="btn btn-primary">Save</button>
+          <button {{action 'cancel'}} class="btn btn-default">Cancel</button>
+      </p>
+  </script>
+
+  <script type="text/x-handlebars" id="user/_edit">
+    <tr>
+        <td>
+            {{input-user value=name insert-newline="doneEditing"}}
+        </td>
+        <td>
+            {{input type="text" value=email insert-newline="doneEditing"}}
+        </td>
+        <td>
+            <button {{action 'doneEditing'}} class="btn btn-primary">Save</button>
+        </td>
+    </tr>
+  </script>
+
+  <script type="text/x-handlebars" id="user/_show">
+      <tr>
+          <td>
+              {{name}}
+          </td>
+          <td>
+              {{email}}
+          </td>
+          <td>
+              <div class="btn-group">
+                  <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action<span class="caret"></span></a>
+                  <ul class="dropdown dropdown-menu">
+                      <li><a {{action 'edit'}} role="button" data-toggle="modal" href="#">Edit</a></li>
+                      <li><a {{action 'remove'}} role="button" class="btn btn-danger" data-toggle="modal" href="#">Delete</a></li>
+                  </ul>
+              </div>
+          </td>
+      </tr>
+  </script>
+
+  <script type="text/x-handlebars" id="user-create">
+    <h1>Hey</h1>
+  </script>
+
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="js/libs/ember-1.4.0.js"></script>
+  <script src="js/libs/ember-data.js"></script>
+  <script src="js/libs/bootstrap.min.js"></script>
+  <script src="js/libs/localstorage_adapter.js"></script>
+  <script src="js/application.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/models/user.js"></script>
+  <script src="js/controllers/user_controller.js"></script>
+  <script src="js/controllers/users_controller.js"></script>
+  <script src="js/views/input_user_view.js"></script>
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <script src="tests/runner.js"></script>
+</body>
+</html>
